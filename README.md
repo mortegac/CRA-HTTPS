@@ -1,68 +1,88 @@
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+## Configurar Https
+Para trabajara rn forma local
 
-## Available Scripts
+## Creación del certificado
+En la raíz del proyecto ejecutar
+```
+openssl req -x509 -newkey rsa:2048 -keyout keytmp.pem -out cert.pem -days 365
+```
+Luego solicitará ingresar los datos para crear el certificado
+```
+Enter PEM pass phrase:  esta-es-mi-frase
+Verifying - Enter PEM pass phrase:  esta-es-mi-frase
+-----
+Country Name (2 letter code) []: Cl
+State or Province Name (full name) []:Santiago
+Locality Name (eg, city) []:Santiago
+Organization Name (eg, company) []:GCA Desarrollos Tecnologicos
+Organizational Unit Name (eg, section) []:
+Common Name (eg, fully qualified host name) []:
+Email Address []:mortega@apgca.cl
+```
 
-In the project directory, you can run:
+Al finalizar creará una archivo que contiene el certificado `keytmp.pem` 
 
-### `yarn start`
+Para habilitar el certificado debemos ejecutar
+```
+openssl rsa -in keytmp.pem -out key.pem
+```
+Se solicitará la frase ingresada al momento de la creación
+`Enter pass phrase for keytmp.pem:`
 
-Runs the app in the development mode.<br />
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
 
-The page will reload if you make edits.<br />
-You will also see any lint errors in the console.
+## Actualizar package.json
+Debemos setear la variable de ambiente HTTPS en truee
 
-### `yarn test`
+Modificar
+```
+"start": "react-scripts start"
+```
 
-Launches the test runner in the interactive watch mode.<br />
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+Por 
+```
+"start": "export HTTPS=true&&SSL_CRT_FILE=cert.pem&&SSL_KEY_FILE=key.pem react-scripts start",
+```
 
-### `yarn build`
 
-Builds the app for production to the `build` folder.<br />
-It correctly bundles React in production mode and optimizes the build for the best performance.
 
-The build is minified and the filenames include the hashes.<br />
-Your app is ready to be deployed!
+## Ejecutar proyecto
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+Ejecutando `npm start` o `yarn start` se levantará nuestro proyecto
 
-### `yarn eject`
+## Error con el certificado en sistemas operativos Mac Osx 
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+Los navegadores devuelven el siguiente error
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+![Error de certificado](error.png)
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+Al seleccionar el certificado aparecerá:
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+![Error de certificado](error2.png)
 
-## Learn More
+Seleccionar el ítem "Certificado (No Válido" y aparecerá la siguiente pantalla
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+![Error de certificado](error3.png)
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+Tomar el icono del certificado y arrastrarlo al escritorio
 
-### Code Splitting
+![Error de certificado](error3.png)
 
-This section has moved here: https://facebook.github.io/create-react-app/docs/code-splitting
+Ejecutar desde el escritorio el certificado generado
 
-### Analyzing the Bundle Size
+![Error de certificado](error4.png)
 
-This section has moved here: https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size
+Al ejecutar el certificado descargado se debe abrir la aplicación `llaveros`, una vez dentro buscar el certificado que dice 'localhost' y hacer dos click sobre él.
+›
+Una vez abierto el certificado debemos hacer click en la opción `Confiar` en la opción `Al utilizar este certificado` seleccionar la opción `Confiar siempre`.
 
-### Making a Progressive Web App
+![Error de certificado](error5.png)
 
-This section has moved here: https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app
+Cerrar llaveros y ahora a disfrutar de tú aplicación corriendo en https.
 
-### Advanced Configuration
 
-This section has moved here: https://facebook.github.io/create-react-app/docs/advanced-configuration
+![Error de certificado](error6.png)
 
-### Deployment
 
-This section has moved here: https://facebook.github.io/create-react-app/docs/deployment
 
-### `yarn build` fails to minify
 
-This section has moved here: https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify
+
